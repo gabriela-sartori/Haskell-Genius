@@ -5,14 +5,12 @@ import Data.Char (toLower)
 
 data Color = Red | Green | Yellow | Blue deriving (Show, Read, Eq)
 
-getRandomColor :: IO Color
-getRandomColor = do
-    num <- randomRIO (1, 4) :: IO Int
-    return $ case num of
-        1 -> Red
-        2 -> Green
-        3 -> Yellow
-        _ -> Blue
+getColorById :: Int -> Color
+getColorById n = case n of
+    1 -> Red
+    2 -> Green
+    3 -> Yellow
+    _ -> Blue
 
 colorInput :: [(Int, Color)] -> IO Bool
 colorInput [] = return True
@@ -27,7 +25,8 @@ gameLoop :: [Color] -> Int -> IO Int
 gameLoop colors points = do
     putStrLn $ if null colors then "-- Starting round --"
                               else "Points: " ++ show points
-    new_color <- getRandomColor
+    random_num <- randomRIO (1, 4) :: IO Int
+    let new_color = getColorById random_num
     putStrLn $ "Last Color: " ++ show new_color
     success <- colorInput (zip [1..] (colors ++ [new_color]))
     if success then gameLoop (colors ++ [new_color]) (points + 1)
